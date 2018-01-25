@@ -1,8 +1,9 @@
 # Countries
 Universal iOS app with individual country data
 
-![Alt text](TableSS.png "Description goes here")
-![Alt text](DetailSS.png "Description goes here")
+![Alt text](TableSS2.png "Description goes here")
+
+![Alt text](DetailSS2.png "Description goes here")
 
 
 ## Getting Started
