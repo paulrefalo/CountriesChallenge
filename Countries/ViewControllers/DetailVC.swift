@@ -31,7 +31,7 @@ class DetailVC: UIViewController {
         mapView.frame = CGRect.zero
         
         var latitude: Float = 0.0
-        var longitude: Float = 0.0 
+        var longitude: Float = 0.0
         
         if var latlong = country.latlng {
             latitude = latlong[0]
@@ -92,7 +92,16 @@ class DetailVC: UIViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.backgroundColor=UIColor.white
         titleLabel.textAlignment = NSTextAlignment.center
-        titleLabel.text = country.name
+        
+        var emojiString = String()
+        let countryCode = country.alpha2Code // placemark.isoCountryCode
+        let base : UInt32 = 127397
+        for v in (countryCode.unicodeScalars) {
+            emojiString.unicodeScalars.append(UnicodeScalar(base + v.value)!)
+        }
+        
+        titleLabel.text = emojiString + " " + country.name + " " + emojiString
+        titleLabel.font = titleLabel.font.withSize(24)
         titleLabel.isHidden = false
         titleLabel.adjustsFontSizeToFitWidth = true
         view.addSubview(titleLabel)
