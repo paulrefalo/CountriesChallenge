@@ -30,8 +30,13 @@ class DetailVC: UIViewController {
         let mapView = MKMapView()
         mapView.frame = CGRect.zero
         
-        let latitude = country.latlng![0]
-        let longitude = country.latlng![1]
+        var latitude: Float = 0.0
+        var longitude: Float = 0.0 
+        
+        if var latlong = country.latlng {
+            latitude = latlong[0]
+            longitude = latlong[1]
+        }
         
         let mapWidth:CGFloat = view.frame.size.width
         let mapHeight:CGFloat = (view.frame.size.height / 2) - 20
