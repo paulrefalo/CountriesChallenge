@@ -2,7 +2,6 @@
 Universal iOS app with individual country data
 
 ![Alt text](TableSS2.png "Description goes here")
-
 ![Alt text](DetailSS2.png "Description goes here")
 
 
