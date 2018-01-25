@@ -11,15 +11,15 @@ import MapKit
 
 class DetailVC: UIViewController {
     
-    var country = Country()
+    var country = NewCountry()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         print(country)
         let mapView = MKMapView()
-        let latitude = country.latlng[0]
-        let longitude = country.latlng[1]
+        let latitude = country.latlng![0]
+        let longitude = country.latlng![1]
         
         let leftMargin:CGFloat = 10
         let topMargin:CGFloat = 150
@@ -32,20 +32,28 @@ class DetailVC: UIViewController {
         mapView.isZoomEnabled = true
         mapView.isScrollEnabled = true
         
-        var divisor = Float(country.area.array.count)
-        if divisor < 4 {
-            divisor = 4
-        } else if divisor < 5 {
-            divisor = 3
-        } else {
-            divisor = 2
+        // create poor man's algorith to zoom map to reasonable span for viewing countries of different sizes
+        if let digitsFloat = country.area {
+            let digitsInt = Int(digitsFloat)    // get the number of digits in the country's area
+       
+            var divisor = Float(digitsInt.array.count)  // set divisor for algorithm
+            if divisor < 4 {
+                divisor = 4
+            } else if divisor < 5 {
+                divisor = 3
+            } else {
+                divisor = 2
+            }
+            
+            // algorithm to adjust map span proportional to country area
+            let zoom = Float(digitsInt.array.count * digitsInt.array.count) / divisor
+            
+            // set map reagion: center and span
+            let center = CLLocationCoordinate2D(latitude: CLLocationDegrees(latitude), longitude: CLLocationDegrees(longitude))
+            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: CLLocationDegrees(zoom), longitudeDelta: CLLocationDegrees(zoom)))
+            mapView.setRegion(region, animated: true)
+            
         }
-        
-        let zoom = Float(country.area.array.count * country.area.array.count) / divisor
-        
-        let center = CLLocationCoordinate2D(latitude: CLLocationDegrees(latitude), longitude: CLLocationDegrees(longitude))
-        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: CLLocationDegrees(zoom), longitudeDelta: CLLocationDegrees(zoom)))
-        mapView.setRegion(region, animated: true)
         
         view.addSubview(mapView)
         

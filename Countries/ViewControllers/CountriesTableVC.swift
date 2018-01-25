@@ -11,26 +11,24 @@ import UIKit
 class CountriesTableVC: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     
     @IBOutlet weak var tableView: UITableView!
-    var countriesArray = [Country]()
+    var countriesArray = [NewCountry]()
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        getCountriesData(completionHandler: { (success) -> Void in
-            
-            // When download completes,control flow goes here.
+        getCountriesDataDecodable(completionHandler: { (success) -> Void in
+            // When download completes, control flow and reload table data
             if success {
                 // download success
                 DispatchQueue.main.async(execute: {() -> Void in
                     self.tableView?.reloadData();
+                    print(self.countriesArray.count)
                 })
             } else {
                 // download fail
                 print("Could not complete country download")
             }
-        })
-        
+        })        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -56,10 +54,10 @@ class CountriesTableVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! CountriesCustomCell
+        let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "cell")!
         // building cell text with Flag emoji
         var emojiString = String()
-        let countryCode = countriesArray[indexPath.row].countryCode // placemark.isoCountryCode
+        let countryCode = countriesArray[indexPath.row].alpha2Code // placemark.isoCountryCode
         let base : UInt32 = 127397
         for v in (countryCode.unicodeScalars) {
             emojiString.unicodeScalars.append(UnicodeScalar(base + v.value)!)
@@ -72,7 +70,7 @@ class CountriesTableVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print(indexPath)
-
+        
     }
     
 }
