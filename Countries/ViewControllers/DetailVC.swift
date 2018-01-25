@@ -10,24 +10,34 @@ import UIKit
 import MapKit
 
 class DetailVC: UIViewController {
-    
+
+    // MARK: Properties
     var country = NewCountry()
     
+    // MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print(country)
+        // set up Label and Map views
+        addLabels()
+        addMapView()
+        
+        print(country)  // print to console for T/S
+
+    }
+    
+    func addMapView() {
         let mapView = MKMapView()
+        mapView.frame = CGRect.zero
+        
         let latitude = country.latlng![0]
         let longitude = country.latlng![1]
         
-        let leftMargin:CGFloat = 10
-        let topMargin:CGFloat = 150
-        let mapWidth:CGFloat = view.frame.size.width - 20
-        let mapHeight:CGFloat = view.frame.size.height / 3
+        let mapWidth:CGFloat = view.frame.size.width
+        let mapHeight:CGFloat = (view.frame.size.height / 2) - 20
+        let mapTop:CGFloat = (view.frame.size.height / 6) - 10
         
-        mapView.frame = CGRect(x: leftMargin, y: topMargin, width: mapWidth, height: mapHeight)
-        
+        mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.mapType = MKMapType.standard
         mapView.isZoomEnabled = true
         mapView.isScrollEnabled = true
@@ -35,7 +45,7 @@ class DetailVC: UIViewController {
         // create poor man's algorith to zoom map to reasonable span for viewing countries of different sizes
         if let digitsFloat = country.area {
             let digitsInt = Int(digitsFloat)    // get the number of digits in the country's area
-       
+            
             var divisor = Float(digitsInt.array.count)  // set divisor for algorithm
             if divisor < 4 {
                 divisor = 4
@@ -57,8 +67,24 @@ class DetailVC: UIViewController {
         
         view.addSubview(mapView)
         
+        let safeArea = self.view.safeAreaLayoutGuide
+        
+        NSLayoutConstraint.activate([
+            mapView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: mapTop),
+            mapView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            mapView.heightAnchor.constraint(equalToConstant: mapHeight),
+            mapView.widthAnchor.constraint(equalToConstant: mapWidth)
+            ])
+    }
+    
+    func addLabels() {
+        let labelHeight = (view.frame.size.height / 6) - 20
+        
+        // titleLabel
         let titleLabel: UILabel = UILabel()
-        titleLabel.frame = CGRect(x: leftMargin, y: 70, width: mapWidth, height: 70)
+        titleLabel.frame = CGRect.zero
+        
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.backgroundColor=UIColor.white
         titleLabel.textAlignment = NSTextAlignment.center
         titleLabel.text = country.name
@@ -66,19 +92,18 @@ class DetailVC: UIViewController {
         titleLabel.adjustsFontSizeToFitWidth = true
         view.addSubview(titleLabel)
         
-        let capitalLabel: UILabel = UILabel()
-        var y = 70 + 70 + topMargin + 20 + 10 + 90
-        capitalLabel.frame = CGRect(x: leftMargin, y: y, width: mapWidth, height: 70)
-        capitalLabel.backgroundColor=UIColor.white
-        capitalLabel.textAlignment = NSTextAlignment.center
-        capitalLabel.text = "Capital: " + country.capital
-        capitalLabel.isHidden = false
-        capitalLabel.adjustsFontSizeToFitWidth = true
-        view.addSubview(capitalLabel)
+        let safeArea = self.view.safeAreaLayoutGuide
         
+        titleLabel.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
+        titleLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+        titleLabel.heightAnchor.constraint(equalToConstant: labelHeight).isActive = true
+        
+        // populationLabel
         let populationLabel: UILabel = UILabel()
-        y = y + 80
-        populationLabel.frame = CGRect(x: leftMargin, y: y, width: mapWidth, height: 70)
+        populationLabel.frame = CGRect.zero
+        
+        populationLabel.translatesAutoresizingMaskIntoConstraints = false
         populationLabel.backgroundColor=UIColor.white
         populationLabel.textAlignment = NSTextAlignment.center
         populationLabel.text = "Population: " + String(describing: country.population)
@@ -86,6 +111,31 @@ class DetailVC: UIViewController {
         populationLabel.adjustsFontSizeToFitWidth = true
         view.addSubview(populationLabel)
         
+        NSLayoutConstraint.activate([
+            populationLabel.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -labelHeight - 5),
+            populationLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            populationLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            populationLabel.heightAnchor.constraint(equalToConstant: labelHeight - 10)
+            ])
+        
+        // capitalLabel
+        let capitalLabel: UILabel = UILabel()
+        capitalLabel.frame = CGRect.zero
+        
+        capitalLabel.translatesAutoresizingMaskIntoConstraints = false
+        capitalLabel.backgroundColor=UIColor.white
+        capitalLabel.textAlignment = NSTextAlignment.center
+        capitalLabel.text = "Capital: " + country.capital
+        capitalLabel.isHidden = false
+        capitalLabel.adjustsFontSizeToFitWidth = true
+        view.addSubview(capitalLabel)
+        
+        NSLayoutConstraint.activate([
+            capitalLabel.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: 0),
+            capitalLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            capitalLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            capitalLabel.heightAnchor.constraint(equalToConstant: labelHeight - 10)
+            ])
     }
     
 }
