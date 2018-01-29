@@ -13,22 +13,44 @@ class DetailVC: UIViewController {
 
     // MARK: Properties
     var country = NewCountry()
+    var offset:CGFloat = 0
     
     // MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // set iPhoneX offset
+        iPhoneXOffset()
         
         // set up Label and Map views
         addLabels()
         addMapView()
-        
         print(country)  // print to console for T/S
-
+    }
+    
+    func iPhoneXOffset() {
+        if UIDevice().userInterfaceIdiom == .phone {
+            switch UIScreen.main.nativeBounds.height {
+            case 1136:
+                print("iPhone 5 or 5S or 5C")
+            case 1334:
+                print("iPhone 6/6S/7/8")
+            case 2208:
+                print("iPhone 6+/6S+/7+/8+")
+            case 2436:
+                print("iPhone X")
+                offset = 60
+                print("************** offset active for iPhone X *****************")
+            default:
+                print("unknown")
+            }
+        }
     }
     
     func addMapView() {
         let mapView = MKMapView()
         mapView.frame = CGRect.zero
+        
         
         var latitude: Float = 0.0
         var longitude: Float = 0.0
@@ -77,7 +99,7 @@ class DetailVC: UIViewController {
         NSLayoutConstraint.activate([
             mapView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: mapTop),
             mapView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            mapView.heightAnchor.constraint(equalToConstant: mapHeight),
+            mapView.heightAnchor.constraint(equalToConstant: mapHeight - offset),
             mapView.widthAnchor.constraint(equalToConstant: mapWidth)
             ])
     }
